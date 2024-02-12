@@ -15,7 +15,8 @@ st.session_state['loaded_plan_path'] = None
 
 def main_page():
     st.title('Vocabulary Memorization Helper')
-    st.write('This app helpes you to memorize vocabulary by the forgetting curve method.')
+    st.write('This app helpes you to memorize TOEFL or GRE vocabulary by the forgetting curve method.')
+    st.write('According to the forgetting curve, people should review the vocabulary on the 1st, 2nd, 4th, 7th, and 15th days.')
     # Create buttons for navigation to different plans
     if st.button('New plan'):
         st.session_state.current_page = 'new_plan'
@@ -30,8 +31,8 @@ def new_plan():
     if st.button('TOEFL'):
         st.session_state['loaded_plan'] = 'toefl.db'
         os.path.join(st.session_state['current_folder'], st.session_state['loaded_plan'])
+        st.session_state.current_page = 'your_plan'
         st.rerun()
-        # st.markdown('[Click me to download TOEFL plan](path/to/toefl_plan.db)')
     if st.button('GRE'):
         st.session_state['loaded_plan'] = 'gre.db'
         os.path.join(st.session_state['current_folder'], st.session_state['loaded_plan'])
@@ -44,7 +45,7 @@ def new_plan():
 
 def continue_plan():
     st.title('Continue plan')
-    st.write('This is the page for continuing with an existing plan.')
+    st.write('Upload you plan (database) so you can continue with your existing plan.')
     
     uploaded_file = st.file_uploader("Choose a plan")
     if uploaded_file is not None:
@@ -61,9 +62,9 @@ def continue_plan():
         
         upload_db()
 
-        st.write("Upload successful")
+        st.write("Upload backend successful")
             
-        if st.button("Your Plan"):
+        if st.button("Go to your Plan"):
             st.session_state.current_page = 'your_plan'
             st.rerun()
 
@@ -73,9 +74,9 @@ def continue_plan():
 
 def your_plan():
     st.title('Your plan: ' + st.session_state.loaded_plan)
-    st.write('This is the page for your current loaded plan.')
+    st.write('You are now ready to start your plan. Click the button below to see today\'s plan.')
 
-    if st.button("Today's Plan"):
+    if st.button("Check Today's vocaulary"):
         st.session_state.current_page = 'display_plan'
         st.rerun()
 
@@ -85,7 +86,7 @@ def your_plan():
 
 def display_plan():
     st.title("Today's plan")
-    st.write('This is the page for continuing with an existing plan.')
+    st.write('These are the words you should review today. Click the button below to download the plan.')
 
     response = get_today_plan()
     
@@ -117,7 +118,7 @@ def upload_db():
     file = open(st.session_state['loaded_plan_path'], 'rb')
     response = requests.post('http://localhost:8080/upload', files={'file': file})
     if response.status_code == 200:
-        st.write('Upload successful')
+        st.write('Upload to frontend successful')
 
 def get_today_plan():
     # example response
