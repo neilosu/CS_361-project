@@ -11,6 +11,7 @@ if 'loaded_plan' not in st.session_state:
 st.session_state['back_to_main_page'] = "Go back to Main Page"
 st.session_state['current_folder'] = os.path.dirname(os.path.abspath(__file__))
 st.session_state['tmp_save_folder'] = os.path.dirname(os.path.abspath(__file__)) + "/tmp"
+st.session_state['loaded_plan_path'] = None
 
 def main_page():
     st.title('Vocabulary Memorization Helper')
@@ -55,9 +56,12 @@ def continue_plan():
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
 
-        st.write("Upload successful")
-
         st.session_state['loaded_plan'] = str(uploaded_file.name)
+        st.session_state['loaded_plan_path'] = file_path
+        
+        upload_db()
+
+        st.write("Upload successful")
             
         if st.button("Your Plan"):
             st.session_state.current_page = 'your_plan'
@@ -108,6 +112,12 @@ def display_plan():
     if st.button(f":red[**{st.session_state['back_to_main_page']}**]"):
         st.session_state.current_page = 'main_page'
         st.rerun()
+
+def upload_db():
+    file = open(st.session_state['loaded_plan_path'], 'rb')
+    response = requests.post('http://localhost:8080/upload', files={'file': file})
+    if response.status_code == 200:
+        st.write('Upload successful')
 
 def get_today_plan():
     # example response

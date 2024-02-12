@@ -1,7 +1,8 @@
-from fastapi import FastAPI
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile
 from fastapi.responses import JSONResponse
 import datetime
+from io import BytesIO
+import os
 
 vocabularies_dict = {
     1: {'word_id': 1, 'word': 'Ephemeral', 'definition': 'Lasting for a very short time.', 'sentence': 'The beauty of cherry blossoms is ephemeral.', 'start_date': str(datetime.date.today()), 'current_memory_index': 1},
@@ -18,7 +19,12 @@ def read_root():
     return {'Hello': 'World'}
 
 @app.post('/upload')
-def upload_db():
+async def upload(file: UploadFile):
+    folder = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(folder, "uploaded_db.db")
+    contents = await file.read()
+    with open(file_path, 'wb') as file_save:
+        file_save.write(contents)
     return {'status': 'success'}
 
 @app.post('/puch_in')
