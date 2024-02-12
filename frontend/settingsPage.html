@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,8 +12,14 @@
         <label for="numberInput">Enter the amount number of new vocabulary:</label>
         <input type="number" id="numberInput" name="numberInput">
         <button id="enterButton">Enter</button>
+        <span id="result"></span> <!-- Span element to display the result -->
     </div>
     <button id="backButton" onclick="window.history.back();">Back</button>
     <script src="script.js"></script> <!-- Link to the JavaScript file -->
+    <script>
+        document.getElementById("enterButton").addEventListener("click", function() {
+            document.getElementById("result").innerHTML = "OK";
+        });
+    </script>
 </body>
 </html>
