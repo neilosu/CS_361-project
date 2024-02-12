@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,13 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vocabulary Memorization App</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .button {
+            width: 300px; /* Adjust the width as needed */
+        }
+    </style>
 </head>
 <body>
     <div id="app">
         <h1>Vocabulary Memorization App</h1>
-        <button id="showTodayVocab">Show Today's Vocabulary</button>
-        <button id="searchVocab">Search</button>
-        <button id="settings">Settings</button>
+        <p>A web application for memorizing TOEFL or GRE vocabulary words based on the forgetting curve.</p> <!-- Added line of description -->
+        <button id="New schedule" class="button">New schedule</button>
+        <button id="Continue your schedule" class="button">Continue your schedule</button>
     </div>
 
     <div id="vocabContainer"></div>
@@ -20,4 +24,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
