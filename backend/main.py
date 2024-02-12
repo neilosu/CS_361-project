@@ -18,6 +18,14 @@ vocabularies = {
     ]
 }
 
+vocabularies_dict = {
+    "Ephemeral": "Lasting for a very short time.",
+    "Pernicious": "Having a harmful effect, especially in a gradual or subtle way.",
+    "Ameliorate": "Make (something bad or unsatisfactory) better.",
+    "Obfuscate": "Render obscure, unclear, or unintelligible.",
+    "Plethora": "A large or excessive amount of (something)."
+}
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
@@ -34,14 +42,20 @@ async def get_todays_vocabulary():
         "vocabularies": vocabularies.get(today_str, [])
     }
 
-# Example SQL command
-@app.get("/sql/{table_name}/{primary_id}")
-async def get_word(table_name: str, primary_id: int):
-    url = f"http://localhost:8082/sql/{table_name}/{primary_id}"
-    try:
-        response = await httpx.get(url)
-        response.raise_for_status()
-    except httpx.HTTPStatusError as exc:
-        raise HTTPException(status_code=exc.response.status_code, detail="Error while calling external service")
+@app.get("/search/{word}")
+async def search_vocabulary(word: str):
+    return {
+        "word": word,
+        "definition": vocabularies_dict.get(word, "Not found")
+    }
 
-    return response.json()
+# # Example SQL command
+# @app.get("/sql/{table_name}/{primary_id}")
+# async def get_word(table_name: str, primary_id: int):
+#     url = f"http://localhost:8082/sql/{table_name}/{primary_id}"
+#     try:
+#         response = await httpx.get(url)
+#         response.raise_for_status()
+#     except httpx.HTTPStatusError as exc:
+#         raise HTTPException(status_code=exc.response.status_code, detail="Error while calling external service")
+#     return response.json()

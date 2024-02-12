@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        #searchResult {
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #f1f1f1;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Page</h1>
+    <form>
+        <input type="text" id="searchInput" placeholder="Enter your search query">
+        <button type="submit" id="searchButton">Enter</button>
+    </form>
+    <button onclick="goBack()">Go Back</button>
+
+    <div id="searchResult"></div> <!-- New div to display the search result -->
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        document.getElementById('searchButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission and page reload
+            var searchQuery = document.getElementById('searchInput').value; // Get the search query from the input field
+            fetch(`http://localhost:8080/search/${encodeURIComponent(searchQuery)}`) // Replace with your actual search endpoint
+            .then(response => response.json())
+            .then(data => {
+                const searchResultDiv = document.getElementById('searchResult');
+                searchResultDiv.innerHTML = ''; // Clear previous results
+
+                // Directly create elements for word, definition
+                const wordElement = document.createElement('div');
+                wordElement.textContent = `Word: ${data.word}`;
+                searchResultDiv.appendChild(wordElement);
+
+                const definitionElement = document.createElement('div');
+                definitionElement.textContent = `Definition: ${data.definition}`;
+                searchResultDiv.appendChild(definitionElement);f
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+
+
+    </script>
+</body>
+</html>
