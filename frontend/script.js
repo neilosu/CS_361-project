@@ -13,3 +13,7 @@ document.getElementById('showTodayVocab').addEventListener('click', function() {
 document.getElementById('searchVocab').addEventListener('click', function() {
     window.location.href = 'searchPage.html'; // Make sure 'searchPage.html' is the correct path
 });
+
+document.getElementById('settings').addEventListener('click', function() {
+    window.location.href = 'settingsPage.html'; // Make sure 'searchPage.html' is the correct path
+});
