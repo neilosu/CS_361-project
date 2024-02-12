@@ -9,3 +9,7 @@ document.getElementById('showTodayVocab').addEventListener('click', function() {
     })
     .catch(error => console.error('Error:', error));
 });
+
+document.getElementById('searchVocab').addEventListener('click', function() {
+    window.location.href = 'searchPage.html'; // Make sure 'searchPage.html' is the correct path
+});
