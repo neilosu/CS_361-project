@@ -115,20 +115,22 @@ def display_plan():
         st.rerun()
 
 def upload_db():
+    # upload db to backend
     file = open(st.session_state['loaded_plan_path'], 'rb')
     response = requests.post('http://localhost:8080/upload', files={'file': file})
     if response.status_code == 200:
         st.write('Upload to frontend successful')
 
 def get_today_plan():
-    # example response
-    # response = {"1": {"word": "Ephemeral", "definition": "Lasting for a very short time."}}
+    # get today's plan from backend
+    # example response = {"1": {"word": "Ephemeral", "definition": "Lasting for a very short time."}}
     response = requests.get('http://localhost:8080/today')
     if response.status_code == 200:
         st.write("Get today's plan successful")
     return response.json()
 
 def punch_in():
+    # add the memory index +1
     response = requests.post('http://localhost:8080/punch_in', data={'word_ids': [1,2]})
     if response.status_code == 200:
         st.write('Punch in successful')
