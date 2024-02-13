@@ -41,7 +41,7 @@ def today():
     cursor = conn.cursor()
 
     # Read 10 words from the word table
-    cursor.execute("SELECT * FROM word LIMIT 10")
+    cursor.execute("SELECT * FROM Word LIMIT 10")
     rows = cursor.fetchall()
 
     # Organize the data and output in a dictionary
