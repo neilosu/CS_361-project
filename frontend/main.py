@@ -30,13 +30,17 @@ def new_plan():
     st.title('New plan')
     st.write('Select one of the following options to start a new plan.')
     if st.button('TOEFL'):
-        st.session_state['loaded_plan'] = 'toefl.db'
-        os.path.join(st.session_state['current_folder'], st.session_state['loaded_plan'])
+        st.session_state['loaded_plan'] = 'db/toefl.db'
+        file_path = os.path.join(st.session_state['current_folder'], st.session_state['loaded_plan'])
+        st.session_state['loaded_plan_path'] = file_path
+        upload_db()
         st.session_state.current_page = 'your_plan'
         st.rerun()
     if st.button('GRE'):
-        st.session_state['loaded_plan'] = 'gre.db'
-        os.path.join(st.session_state['current_folder'], st.session_state['loaded_plan'])
+        st.session_state['loaded_plan'] = 'db/gre.db'
+        file_path = os.path.join(st.session_state['current_folder'], st.session_state['loaded_plan'])
+        st.session_state['loaded_plan_path'] = file_path
+        upload_db()
         st.session_state.current_page = 'your_plan'
         st.rerun()
         # st.markdown('[Click me to download GRE plan](path/to/gre_plan.db)')
