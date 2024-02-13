@@ -2,10 +2,10 @@
 
 # To start frontend
 ```
-cd frontend && python -m http.server && cd ..
+streamlit run frontend/main.py
 ```
 
-# To start backend
+# To start the temparary mock backend
 ```
 cd backend && uvicorn main:app --port 8080  --reload && cd ..
 ```
