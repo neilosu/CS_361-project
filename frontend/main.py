@@ -17,6 +17,7 @@ def main_page():
     st.title('Vocabulary Memorization Helper')
     st.write('This app helpes you to memorize TOEFL or GRE vocabulary by the forgetting curve method.')
     st.write('According to the forgetting curve, people should review the vocabulary on the 1st, 2nd, 4th, 7th, and 15th days.')
+    st.write('Start a new plan or continue with your existing plan by click the corresponding button below.')
     # Create buttons for navigation to different plans
     if st.button('New plan'):
         st.session_state.current_page = 'new_plan'
