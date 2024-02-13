@@ -1,61 +1,64 @@
-# main.py
-from fastapi import FastAPI, Request, HTTPException
-import httpx
-from fastapi.middleware.cors import CORSMiddleware
-from datetime import date
-from typing import List, Dict
+from fastapi import FastAPI, UploadFile
+from fastapi.responses import JSONResponse
+import datetime
+from io import BytesIO
+import os
+import sqlite3
+import sqlite3
+
+# vocabularies_dict = {
+#     1: {'word_id': 1, 'word': 'Ephemeral', 'definition': 'Lasting for a very short time.', 'sentence': 'The beauty of cherry blossoms is ephemeral.', 'start_date': str(datetime.date.today()), 'current_memory_index': 1},
+#     2: {'word_id': 2, 'word': 'Pernicious', 'definition': 'Having a harmful effect, especially in a gradual or subtle way.', 'sentence': 'The pernicious effects of smoking are well-documented.', 'start_date': str(datetime.date.today()), 'current_memory_index': 2},
+#     3: {'word_id': 3, 'word': 'Ameliorate', 'definition': 'Make (something bad or unsatisfactory) better.', 'sentence': 'The new policies aim to ameliorate the working conditions.', 'start_date': str(datetime.date.today()), 'current_memory_index': 3},
+#     4: {'word_id': 4, 'word': 'Obfuscate', 'definition': 'Render obscure, unclear, or unintelligible.', 'sentence': 'The politician speech was deliberately obfuscated.', 'start_date': str(datetime.date.today()), 'current_memory_index': 4},
+#     5: {'word_id': 5, 'word': 'Plethora', 'definition': 'A large or excessive amount of (something).', 'sentence': 'The store offers a plethora of options for shoppers.', 'start_date': str(datetime.date.today()), 'current_memory_index': 5}
+# }
 
 app = FastAPI()
 
-# Example vocabulary data
-vocabularies = {
-    "2024-02-13": [
-        {"word": "Ephemeral", "definition": "Lasting for a very short time.", "example": "Fashions are ephemeral."},
-        {"word": "Pernicious", "definition": "Having a harmful effect, especially in a gradual or subtle way.", "example": "The pernicious influences of the mass media."},
-        {"word": "Ameliorate", "definition": "Make (something bad or unsatisfactory) better.", "example": "The reform did much to ameliorate living standards."},
-        {"word": "Obfuscate", "definition": "Render obscure, unclear, or unintelligible.", "example": "The spelling changes will deform some familiar words and obfuscate their etymological origins."},
-        {"word": "Plethora", "definition": "A large or excessive amount of (something).", "example": "A plethora of committees and subcommittees."},
-    ]
-}
+@app.get('/')
+def read_root():
+    return {'Hello': 'World'}
 
-vocabularies_dict = {
-    "Ephemeral": "Lasting for a very short time.",
-    "Pernicious": "Having a harmful effect, especially in a gradual or subtle way.",
-    "Ameliorate": "Make (something bad or unsatisfactory) better.",
-    "Obfuscate": "Render obscure, unclear, or unintelligible.",
-    "Plethora": "A large or excessive amount of (something)."
-}
+@app.post('/upload')
+async def upload(file: UploadFile):
+    folder = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(folder, "uploaded_db.db")
+    contents = await file.read()
+    with open(file_path, 'wb') as file_save:
+        file_save.write(contents)
+    return {'status': 'success'}
 
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+@app.post('/punch_in')
+def punch_in():
+    # modify the current_memory_index -> +1
+    return {'status': 'success'}
 
-@app.get("/today")
-async def get_todays_vocabulary():
-    today_str = date.today().isoformat()
-    return {
-        "date": today_str,
-        "vocabularies": vocabularies.get(today_str, [])
-    }
+@app.get('/today')
+def today():
+    # Connect to the database
+    conn = sqlite3.connect('uploaded_db.db')
+    cursor = conn.cursor()
 
-@app.get("/search/{word}")
-async def search_vocabulary(word: str):
-    return {
-        "word": word,
-        "definition": vocabularies_dict.get(word, "Not found")
-    }
+    # Read 10 words from the word table
+    cursor.execute("SELECT * FROM Word LIMIT 10")
+    rows = cursor.fetchall()
 
-# # Example SQL command
-# @app.get("/sql/{table_name}/{primary_id}")
-# async def get_word(table_name: str, primary_id: int):
-#     url = f"http://localhost:8082/sql/{table_name}/{primary_id}"
-#     try:
-#         response = await httpx.get(url)
-#         response.raise_for_status()
-#     except httpx.HTTPStatusError as exc:
-#         raise HTTPException(status_code=exc.response.status_code, detail="Error while calling external service")
-#     return response.json()
+    # Organize the data and output in a dictionary
+    words_dict = {}
+    for row in rows:
+        word_id, word, definition, sentence, start_date, current_memory_index = row
+        words_dict[word_id] = {
+            'word_id': word_id,
+            'word': word,
+            'definition': definition,
+            'sentence': sentence,
+            'start_date': start_date,
+            'current_memory_index': current_memory_index
+        }
+
+    # Close the database connection
+    cursor.close()
+    conn.close()
+
+    return JSONResponse(content=words_dict)
