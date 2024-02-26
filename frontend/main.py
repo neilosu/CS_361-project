@@ -6,6 +6,9 @@ from io import BytesIO
 import os
 from datetime import datetime, timedelta
 import json
+import json
+import tkinter as tk
+from tkinter import filedialog
 
 class PlanManager:
     def __init__(self, plan=None):
@@ -87,7 +90,7 @@ def new_plan():
         st.session_state.current_page = 'your_plan'
         st.rerun()
 
-    if st.button(st.session_state['back_to_main_page']):
+    if st.button(f":red[**{st.session_state['back_to_main_page']}**]"):
         st.session_state.current_page = 'main_page'
         st.rerun()
 
@@ -117,7 +120,7 @@ def your_plan():
         st.session_state.current_page = 'check_today_words'
         st.rerun()
 
-    if st.button(st.session_state['back_to_main_page']):
+    if st.button(f":red[**{st.session_state['back_to_main_page']}**]"):
         st.session_state.current_page = 'main_page'
         st.rerun()
 
@@ -155,9 +158,10 @@ def check_today_words():
                     new_dict = {"list:5,unit:2": data}
                     display[key] = new_dict
 
+            st.download_button("Download today's words", json.dumps(display, indent=4), f"today_words.json")
             st.write(display)
 
-    if st.button(st.session_state['back_to_main_page']):
+    if st.button(f":red[**{st.session_state['back_to_main_page']}**]"):
         st.session_state.current_page = 'main_page'
         st.rerun()
 
