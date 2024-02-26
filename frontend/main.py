@@ -147,15 +147,14 @@ def check_today_words():
             for key, value in keys_with_date.items():
                 list_number, unit_number = value.split(',')[0].split(':')[1], value.split(',')[1].split(':')[1]
                 
-                # attribute = ["word_id", "meaning_US", "sentence"]
-                # result = requests.post('http://localhost:5000/word', json={'list': list_number, 'unit': unit_number, 'attribute': attribute})
-                result = requests.Response()
-                result.status_code = 200
-                result._content = b'{"happy": {"word_id": "qe234jhwe3", "meaning_US": "delightful", "sentence": "I am happy."}, "sad" : {"word_id": "435bkj3o", "meaning_US": "unhappy", "sentence": "I am sad."}}'
-                
+                attribute = ["word_id", "meaning_US", "sentence", "word"]
+
+                result = requests.post('http://127.0.0.1:5000/db/acquire_unit', json={'list': list_number, 'unit': unit_number, 'attribute': attribute})
+
                 if result.status_code == 200:
                     data = result.json()
-                    new_dict = {"list:5,unit:2": data}
+                    data_dict = json.loads(data)
+                    new_dict = {f"list:{list_number},unit:{unit_number}": data_dict}
                     display[key] = new_dict
 
             st.download_button("Download today's words", json.dumps(display, indent=4), f"today_words.json")
