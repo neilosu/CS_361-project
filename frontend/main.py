@@ -114,14 +114,14 @@ def your_plan():
     st.write("You're all set to begin your plan. Use the button below to view today's vocabulary.")
 
     if st.button("Check Today's Vocabulary"):
-        st.session_state.current_page = 'display_plan'
+        st.session_state.current_page = 'check_today_words'
         st.rerun()
 
     if st.button(st.session_state['back_to_main_page']):
         st.session_state.current_page = 'main_page'
         st.rerun()
 
-def display_plan():
+def check_today_words():
     """Displays the user's vocabulary for the day."""
     st.title("Today's Vocabulary")
     st.write("Here are the words you need to learn today.")
@@ -138,8 +138,24 @@ def display_plan():
                     for key, date in value.items():
                         if date == today:
                             keys_with_date[key + 'th'] = main_key
-            st.write("Keys with value containing " + today + ":")
-            st.write(keys_with_date)
+            st.write("Explanation: '5th':'list:5,unit:2' means this is the 5th time you memorize this unit (list 5 unit 2)")
+
+            display = {}
+            for key, value in keys_with_date.items():
+                list_number, unit_number = value.split(',')[0].split(':')[1], value.split(',')[1].split(':')[1]
+                
+                # attribute = ["word_id", "meaning_US", "sentence"]
+                # result = requests.post('http://localhost:5000/word', json={'list': list_number, 'unit': unit_number, 'attribute': attribute})
+                result = requests.Response()
+                result.status_code = 200
+                result._content = b'{"happy": {"word_id": "qe234jhwe3", "meaning_US": "delightful", "sentence": "I am happy."}, "sad" : {"word_id": "435bkj3o", "meaning_US": "unhappy", "sentence": "I am sad."}}'
+                
+                if result.status_code == 200:
+                    data = result.json()
+                    new_dict = {"list:5,unit:2": data}
+                    display[key] = new_dict
+
+            st.write(display)
 
     if st.button(st.session_state['back_to_main_page']):
         st.session_state.current_page = 'main_page'
@@ -158,5 +174,5 @@ elif st.session_state.current_page == 'continue_plan':
     continue_plan()
 elif st.session_state.current_page == 'your_plan':
     your_plan()
-elif st.session_state.current_page == 'display_plan':
-    display_plan()
+elif st.session_state.current_page == 'check_today_words':
+    check_today_words()
