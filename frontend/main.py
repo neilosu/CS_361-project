@@ -84,7 +84,7 @@ def new_plan():
 
     if st.button('GRE Vocabulary'):
         today = st.session_state.plan_manager.today
-        plan = st.session_state['plan_manager'].generate_forgetting_curve_schedule('2024-01-01')
+        plan = st.session_state['plan_manager'].generate_forgetting_curve_schedule('today')
         st.session_state['plan_manager'].plan = 'gre_default_plan.json'
         st.session_state['plan_manager'].save_schedule_to_json(plan, 'gre_default_plan.json')
         st.session_state.current_page = 'your_plan'
