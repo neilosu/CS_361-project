@@ -116,6 +116,9 @@ def your_plan():
     st.title(f"Your Plan: {st.session_state.plan_manager.plan}")
     st.write("You're all set to begin your plan. Use the button below to view today's vocabulary.")
 
+    with open(st.session_state.plan_manager.plan, 'rb') as f:
+        st.download_button("Download Your Plan", f, file_name=st.session_state.plan_manager.plan)
+
     if st.button("Check Today's Vocabulary"):
         st.session_state.current_page = 'check_today_words'
         st.rerun()
