@@ -68,6 +68,7 @@ def main_page():
     """Displays the main page of the Vocabulary Memorization Helper."""
     st.title('Vocabulary Memorization Helper')
     st.write('Enhance your vocabulary memorization with the forgetting curve method, ideal for GRE preparation and more.')
+    st.write('According to the forgetting curve, the best time review a word is the 1st, 2nd, 4th, 7th, 15th day after you first learn it.')
     st.write('Click below to start a new plan or continue with an existing one.')
 
     if st.button('New plan'):
@@ -116,12 +117,16 @@ def your_plan():
     st.title(f"Your Plan: {st.session_state.plan_manager.plan}")
     st.write("You're all set to begin your plan. Use the button below to view today's vocabulary.")
 
-    with open(st.session_state.plan_manager.plan, 'rb') as f:
-        st.download_button("Download Your Plan", f, file_name=st.session_state.plan_manager.plan)
-
     if st.button("Check Today's Vocabulary"):
         st.session_state.current_page = 'check_today_words'
         st.rerun()
+
+    with open(st.session_state.plan_manager.plan, 'rb') as f:
+        st.download_button(f":green[**Download Your Plan (List and Unit based)**]", f, file_name=st.session_state.plan_manager.plan)
+
+    converted_plan_path = convert_to_time_based(st.session_state.plan_manager.plan)
+    with open(converted_plan_path, 'rb') as f:
+        st.download_button(f":green[**Download Your Plan (Date based)**]", f, file_name=converted_plan_path)
 
     if st.button(f":red[**{st.session_state['back_to_main_page']}**]"):
         st.session_state.current_page = 'main_page'
@@ -160,12 +165,40 @@ def check_today_words():
                     new_dict = {f"list:{list_number},unit:{unit_number}": data_dict}
                     display[key] = new_dict
 
-            st.download_button("Download today's words", json.dumps(display, indent=4), f"today_words.json")
+            st.download_button(f":green[**Download today's words**]", json.dumps(display, indent=4), f"today_words.json")
             st.write(display)
 
     if st.button(f":red[**{st.session_state['back_to_main_page']}**]"):
         st.session_state.current_page = 'main_page'
         st.rerun()
+
+def convert_to_time_based(file_path):
+    # Load the JSON file content
+    with open(file_path, 'r') as file:
+        study_plan = json.load(file)
+
+    # Convert the nested dictionary into a list of tuples for sorting
+    date_plan = []
+    for list_unit, dates in study_plan.items():
+        for index, date in dates.items():
+            date_plan.append((date, list_unit, index))
+
+    # Sort the list based on dates
+    date_plan_sorted = sorted(date_plan, key=lambda x: x[0])
+
+    # Re-arrange based on dates into a new dictionary
+    sorted_study_plan = {}
+    for date, list_unit, index in date_plan_sorted:
+        if date not in sorted_study_plan:
+            sorted_study_plan[date] = []
+        sorted_study_plan[date].append((list_unit, index))
+
+    # Save sorted_study_plan to a JSON file
+    output_file_path = file_path.split('.json')[0] + '_sorted.json'  # Path to the output JSON file
+    with open(output_file_path, 'w') as output_file:
+        json.dump(sorted_study_plan, output_file, indent=4)
+
+    return output_file_path
 
 # Routing logic to display the appropriate page based on the current state
 if 'current_page' not in st.session_state:
