@@ -111,6 +111,7 @@ def new_plan():
                 if st.button('Cancel'):
                     # Reset the flag without rerouting if user cancels
                     st.session_state['confirm_back'] = False
+                    st.rerun()
 
     # Check for a button click to trigger the confirmation message
     if st.button(f":red[**Back to Main Page**]"):  # Using a simplified label for clarity
@@ -134,6 +135,32 @@ def continue_plan():
             st.session_state.current_page = 'your_plan'
             st.rerun()
 
+        
+    if 'confirm_back' not in st.session_state:
+        st.session_state['confirm_back'] = False
+
+    # Display the confirmation expander if 'confirm_back' is True
+    if st.session_state['confirm_back']:
+        with st.expander("Confirmation", expanded=True):
+            st.warning("Are you sure you want to go back to the main page?")
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button('Yes, go back'):
+                    # Actions to take if user confirms
+                    st.session_state.current_page = 'main_page'
+                    st.session_state['confirm_back'] = False  # Reset the flag
+                    st.experimental_rerun()
+            with col2:
+                if st.button('Cancel'):
+                    # Reset the flag without rerouting if user cancels
+                    st.session_state['confirm_back'] = False
+                    st.rerun()
+
+    # Check for a button click to trigger the confirmation message
+    if st.button(f":red[**Back to Main Page**]"):  # Using a simplified label for clarity
+        st.session_state['confirm_back'] = True
+        st.rerun()
+
 def your_plan():
     """Displays the user's current plan and provides options to proceed."""
     st.title(f"Your Plan: {st.session_state.plan_manager.plan}")
@@ -152,6 +179,32 @@ def your_plan():
 
     if st.button(f":red[**{st.session_state['back_to_main_page']}**]"):
         st.session_state.current_page = 'main_page'
+        st.rerun()
+
+        
+    if 'confirm_back' not in st.session_state:
+        st.session_state['confirm_back'] = False
+
+    # Display the confirmation expander if 'confirm_back' is True
+    if st.session_state['confirm_back']:
+        with st.expander("Confirmation", expanded=True):
+            st.warning("Are you sure you want to go back to the main page?")
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button('Yes, go back'):
+                    # Actions to take if user confirms
+                    st.session_state.current_page = 'main_page'
+                    st.session_state['confirm_back'] = False  # Reset the flag
+                    st.experimental_rerun()
+            with col2:
+                if st.button('Cancel'):
+                    # Reset the flag without rerouting if user cancels
+                    st.session_state['confirm_back'] = False
+                    st.rerun()
+
+    # Check for a button click to trigger the confirmation message
+    if st.button(f":red[**Back to Main Page**]"):  # Using a simplified label for clarity
+        st.session_state['confirm_back'] = True
         st.rerun()
 
 def check_today_words():
@@ -192,6 +245,32 @@ def check_today_words():
 
     if st.button(f":red[**{st.session_state['back_to_main_page']}**]"):
         st.session_state.current_page = 'main_page'
+        st.rerun()
+
+        
+    if 'confirm_back' not in st.session_state:
+        st.session_state['confirm_back'] = False
+
+    # Display the confirmation expander if 'confirm_back' is True
+    if st.session_state['confirm_back']:
+        with st.expander("Confirmation", expanded=True):
+            st.warning("Are you sure you want to go back to the main page?")
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button('Yes, go back'):
+                    # Actions to take if user confirms
+                    st.session_state.current_page = 'main_page'
+                    st.session_state['confirm_back'] = False  # Reset the flag
+                    st.experimental_rerun()
+            with col2:
+                if st.button('Cancel'):
+                    # Reset the flag without rerouting if user cancels
+                    st.session_state['confirm_back'] = False
+                    st.rerun()
+
+    # Check for a button click to trigger the confirmation message
+    if st.button(f":red[**Back to Main Page**]"):  # Using a simplified label for clarity
+        st.session_state['confirm_back'] = True
         st.rerun()
 
 def convert_to_time_based(file_path):
