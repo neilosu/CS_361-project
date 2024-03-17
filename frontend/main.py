@@ -5,6 +5,7 @@ import requests
 import os
 
 class PlanManager:
+    """A class to manage the user's vocabulary memorization plan."""
     def __init__(self, plan=None):
         """Initializes the PlanManager with an optional path to a plan file."""
         self.plan = plan
@@ -33,13 +34,18 @@ class PlanManager:
             total_units = 2 if list_number == 34 else units_per_list
 
             for unit_number in range(1, total_units + 1):
-                review_dates = [current_date + timedelta(days=interval) for interval in forgetting_curve_intervals]
-                schedule[f"list:{list_number},unit:{unit_number}"] = {i: date.strftime('%Y-%m-%d') for i, date in enumerate(review_dates)}
+                review_dates = [
+                    current_date + timedelta(days=interval)
+                    for interval in forgetting_curve_intervals
+                ]
+                schedule[f"list:{list_number},unit:{unit_number}"] = {
+                    i: date.strftime('%Y-%m-%d')
+                    for i, date in enumerate(review_dates)
+                }
                 current_date += timedelta(days=1)
 
         return schedule
-    
-    
+
     def save_schedule_to_json(self, schedule, filename):
         """
         Saves the given schedule to a JSON file.
