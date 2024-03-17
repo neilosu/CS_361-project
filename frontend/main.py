@@ -67,9 +67,11 @@ st.session_state.setdefault('plan_manager', PlanManager())
 def main_page():
     """Displays the main page of the Vocabulary Memorization Helper."""
     st.title('Vocabulary Memorization Helper')
+    st.write(f":orange[**Help you to extract the scheduled words to learn today.**]")
     st.write('Enhance your vocabulary memorization with the forgetting curve method, ideal for GRE preparation and more.')
     st.write('According to the forgetting curve, the best time review a word is the 1st, 2nd, 4th, 7th, 15th day after you first learn it.')
-    st.write('Click below to start a new plan or continue with an existing one.')
+    st.write('Click below to start a new plan or continue with an existing one. (NEED TO UPLOAD YOUR EXISTING PLAN.)')
+    st.write('You will always have a button to go back to this main page.')
 
     if st.button('New plan'):
         st.session_state.current_page = 'new_plan'
@@ -90,9 +92,29 @@ def new_plan():
         st.session_state['plan_manager'].save_schedule_to_json(plan, 'gre_default_plan.json')
         st.session_state.current_page = 'your_plan'
         st.rerun()
+        
+    if 'confirm_back' not in st.session_state:
+        st.session_state['confirm_back'] = False
 
-    if st.button(f":red[**{st.session_state['back_to_main_page']}**]"):
-        st.session_state.current_page = 'main_page'
+    # Display the confirmation expander if 'confirm_back' is True
+    if st.session_state['confirm_back']:
+        with st.expander("Confirmation", expanded=True):
+            st.warning("Are you sure you want to go back to the main page?")
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button('Yes, go back'):
+                    # Actions to take if user confirms
+                    st.session_state.current_page = 'main_page'
+                    st.session_state['confirm_back'] = False  # Reset the flag
+                    st.experimental_rerun()
+            with col2:
+                if st.button('Cancel'):
+                    # Reset the flag without rerouting if user cancels
+                    st.session_state['confirm_back'] = False
+
+    # Check for a button click to trigger the confirmation message
+    if st.button(f":red[**Back to Main Page**]"):  # Using a simplified label for clarity
+        st.session_state['confirm_back'] = True
         st.rerun()
 
 def continue_plan():
